@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 const InputIcon = ({ type }: { type: any }) => {
@@ -43,12 +43,25 @@ const InputIcon = ({ type }: { type: any }) => {
 };
 
 function App() {
+  const [finished, setFinished] = useState<any>(false);
   const [row, setRow] = useState<any>({
     data: [null, null, null, null, null, null, null, null, null],
     player: 1,
     playerOne: [],
     playerTwo: [],
   });
+
+  const changeCellIndex = useMemo(() => {
+    const player = row.player === 1 ? row.playerOne : row.playerTwo;
+    if (finished) {
+        return null;
+    }
+    if (player.length === 3) {
+      return player[0];
+    }
+
+    return null;
+  }, [row, finished]);
 
   const handlePut = (index: number) => {
     setRow((prev: any) => {
@@ -61,7 +74,7 @@ function App() {
           newRow.data[index] = null;
         }
       } else {
-        newRow.playerTwo[prev.playerOne.length] = index;
+        newRow.playerTwo[prev.playerTwo.length] = index;
         if (newRow.playerTwo.length === 4) {
           const index = newRow.playerTwo.splice(0, 1)[0];
           newRow.data[index] = null;
@@ -119,6 +132,7 @@ function App() {
       conEight
     ) {
       toast.success(`Player ${player} win!`);
+      setFinished(true);
     }
   }, [row.data]);
 
@@ -127,10 +141,16 @@ function App() {
       <Toaster />
       <div className="flex flex-col justify-center items-center min-h-screen">
         <div className="max-w-lg w-full p-5 border border-gray-400 rounded-md shadow-sm">
-          <div className="grid grid-cols-3">
+          <div
+            className="grid grid-cols-3"
+            style={{ pointerEvents: finished ? "none" : "auto" }}
+          >
             <div
               onClick={() => {
                 handlePut(0);
+              }}
+              style={{
+                backgroundColor: changeCellIndex === 0 ? "black" : "white",
               }}
               className="border-r flex justify-center items-center  border-b h-[100px] border-gray-700"
             >
@@ -140,6 +160,9 @@ function App() {
               onClick={() => {
                 handlePut(1);
               }}
+              style={{
+                backgroundColor: changeCellIndex === 1 ? "black" : "white",
+              }}
               className=" border-r flex justify-center items-center  border-b h-[100px] border-gray-700"
             >
               <InputIcon type={row.data[1]} />
@@ -147,6 +170,9 @@ function App() {
             <div
               onClick={() => {
                 handlePut(2);
+              }}
+              style={{
+                backgroundColor: changeCellIndex === 2 ? "black" : "white",
               }}
               className=" flex justify-center items-center  border-b h-[100px] border-gray-700"
             >
@@ -156,6 +182,9 @@ function App() {
               onClick={() => {
                 handlePut(3);
               }}
+              style={{
+                backgroundColor: changeCellIndex === 3 ? "black" : "white",
+              }}
               className=" border-r flex  justify-center items-center  border-b h-[100px] border-gray-700"
             >
               <InputIcon type={row.data[3]} />
@@ -163,6 +192,9 @@ function App() {
             <div
               onClick={() => {
                 handlePut(4);
+              }}
+              style={{
+                backgroundColor: changeCellIndex === 4 ? "black" : "white",
               }}
               className=" border-r flex  justify-center items-center  border-b h-[100px] border-gray-700"
             >
@@ -172,6 +204,9 @@ function App() {
               onClick={() => {
                 handlePut(5);
               }}
+              style={{
+                backgroundColor: changeCellIndex === 5 ? "black" : "white",
+              }}
               className=" flex  justify-center items-center  border-b h-[100px] border-gray-700"
             >
               <InputIcon type={row.data[5]} />
@@ -179,6 +214,9 @@ function App() {
             <div
               onClick={() => {
                 handlePut(6);
+              }}
+              style={{
+                backgroundColor: changeCellIndex === 6 ? "black" : "white",
               }}
               className=" border-r flex  justify-center items-center  h-[100px] border-gray-700"
             >
@@ -188,6 +226,9 @@ function App() {
               onClick={() => {
                 handlePut(7);
               }}
+              style={{
+                backgroundColor: changeCellIndex === 7 ? "black" : "white",
+              }}
               className=" border-r flex  justify-center items-center  h-[100px] border-gray-700"
             >
               <InputIcon type={row.data[7]} />
@@ -195,6 +236,9 @@ function App() {
             <div
               onClick={() => {
                 handlePut(8);
+              }}
+              style={{
+                backgroundColor: changeCellIndex === 8 ? "black" : "white",
               }}
               className=" flex  justify-center items-center  h-[100px] border-gray-700"
             >
@@ -211,6 +255,7 @@ function App() {
                 playerOne: [],
                 playerTwo: [],
               });
+              setFinished(false);
             }}
             type="button"
             className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
